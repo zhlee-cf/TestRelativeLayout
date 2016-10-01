@@ -47,7 +47,12 @@ public class FocusRelativeLayout extends RelativeLayout {
     private void initView() {
         views = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
-            FocusImageView imageView = new FocusImageView(ctx);
+            FocusImageView imageView;
+            if (i == 1) {
+                imageView = new CarouselImageView(ctx);
+            } else {
+                imageView = new FocusImageView(ctx);
+            }
             // 动态创建的View需要手动设置id，不然没有id，getId的时候返回的都是-1
             // 通过ID判断当点击OK键时，焦点在哪儿
             imageView.setId(i);
@@ -112,7 +117,7 @@ public class FocusRelativeLayout extends RelativeLayout {
                 break;
             case 1:
                 views.get(1).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 2), 0, DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                views.get(1).setImageResource(R.mipmap.ic_launcher);
+//                views.get(1).setImageResource(R.mipmap.ic_launcher);
                 break;
             case 2:
                 views.get(2).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 6), 0, DensityUtil.dip2px(ctx, singleSizeWidth * 8), DensityUtil.dip2px(ctx, singleSizeHeight * 3));

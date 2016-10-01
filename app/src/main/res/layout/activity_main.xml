@@ -21,7 +21,13 @@
             android:text="Hello World!" />
     </RelativeLayout>
 
-    <com.exiu.testrelativelayout.FocusRelativeLayout
+    <!--<com.exiu.testrelativelayout.FocusRelativeLayout-->
+        <!--android:id="@+id/rl_2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1"/>    -->
+
+    <com.exiu.testrelativelayout.CustomRelativeLayout
         android:id="@+id/rl_2"
         android:layout_width="match_parent"
         android:layout_height="0dp"

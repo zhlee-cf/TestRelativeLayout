@@ -8,36 +8,52 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-public class FocusImageView extends ImageView {
+public class RelativeLayoutView extends RelativeLayout {
 
     private int co = Color.TRANSPARENT;
     private int borderwidth = DensityUtil.dip2px(getContext(), 5);
     private AnimatorSet mAnimatorSetZoomIn;
     private AnimatorSet mAnimatorSetZoomOut;
+    private int selfSizeWidth;
+    private int selfSizeHeight;
+    private ImageView imageView;
+    private TextView textView;
 
-    public FocusImageView(Context context) {
+    public RelativeLayoutView(Context context) {
         super(context);
         initView();
     }
 
-    public FocusImageView(Context context, AttributeSet attrs,
-                          int defStyle) {
+    public RelativeLayoutView(Context context, AttributeSet attrs,
+                              int defStyle) {
         super(context, attrs, defStyle);
         initView();
     }
 
-    public FocusImageView(Context context, AttributeSet attrs) {
+    public RelativeLayoutView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
     void initView() {
-        setScaleType(ScaleType.FIT_XY);
         setFocusable(true);
         setFocusableInTouchMode(true);
-        setImageResource(R.mipmap.ic_launcher);
+        setPadding(5, 5, 5, 5);
+        textView = new TextView(getContext());
+        textView.setText("测试");
+        textView.setBackgroundColor(Color.GRAY);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        imageView = new ImageView(getContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setImageResource(R.mipmap.ic_launcher);
+        addView(imageView);
+        addView(textView);
     }
 
     //设置颜色  
@@ -64,6 +80,50 @@ public class FocusImageView extends ImageView {
         //设置边框宽度
         paint.setStrokeWidth(borderwidth);
         canvas.drawRect(rec, paint);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        // 画边框
+        Rect rec = canvas.getClipBounds();
+        rec.bottom--;
+        rec.right--;
+        Paint paint = new Paint();
+        //设置边框颜色
+        paint.setColor(co);
+        paint.setStyle(Paint.Style.STROKE);
+        //设置边框宽度
+        paint.setStrokeWidth(borderwidth);
+        canvas.drawRect(rec, paint);
+    }
+
+    public ImageView getImageView() {
+        return this.imageView;
+    }
+
+    public TextView getTextView() {
+        return this.textView;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        // 此控件宽高
+        selfSizeWidth = MeasureSpec.getSize(widthMeasureSpec);
+        selfSizeHeight = MeasureSpec.getSize(heightMeasureSpec);
+        // 测量所有的子view  的大小
+        for (int i = 0; i < getChildCount(); i++) {
+            View view = getChildAt(i);
+            view.measure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+//        imageView.layout(0, 0, DensityUtil.dip2px(getContext(), selfSizeWidth), DensityUtil.dip2px(getContext(), selfSizeHeight));
+        ToastUtil.showTextToast(getContext(), "宽::" + selfSizeWidth + "高::" + selfSizeHeight);
     }
 
     @Override
