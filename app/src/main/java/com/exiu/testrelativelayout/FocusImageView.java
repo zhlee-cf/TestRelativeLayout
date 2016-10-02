@@ -34,7 +34,8 @@ public class FocusImageView extends ImageView {
     }
 
     void initView() {
-        setScaleType(ScaleType.FIT_XY);
+        setScaleType(ScaleType.FIT_CENTER);
+        setPadding(5, 5, 5, 5);
         setFocusable(true);
         setFocusableInTouchMode(true);
         setImageResource(R.mipmap.ic_launcher);

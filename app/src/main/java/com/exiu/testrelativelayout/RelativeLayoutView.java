@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,10 +46,11 @@ public class RelativeLayoutView extends RelativeLayout {
         setPadding(5, 5, 5, 5);
         textView = new TextView(getContext());
         textView.setText("测试");
-        textView.setBackgroundColor(Color.GRAY);
-        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        textView.setBackgroundColor(Color.argb(88, 0, 0, 0));
+//        textView.setGravity(Gravity.CENTER_HORIZONTAL);
         imageView = new ImageView(getContext());
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
         imageView.setImageResource(R.mipmap.ic_launcher);
         addView(imageView);
         addView(textView);
@@ -123,7 +123,7 @@ public class RelativeLayoutView extends RelativeLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 //        imageView.layout(0, 0, DensityUtil.dip2px(getContext(), selfSizeWidth), DensityUtil.dip2px(getContext(), selfSizeHeight));
-        ToastUtil.showTextToast(getContext(), "宽::" + selfSizeWidth + "高::" + selfSizeHeight);
+//        ToastUtil.showTextToast(getContext(), "宽::" + selfSizeWidth + "高::" + selfSizeHeight);
     }
 
     @Override

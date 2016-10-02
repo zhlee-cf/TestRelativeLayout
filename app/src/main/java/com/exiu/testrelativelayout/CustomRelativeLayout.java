@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -45,6 +44,7 @@ public class CustomRelativeLayout extends RelativeLayout {
         initView();
     }
 
+
     /**
      * 初始化 创建需要的ImageView
      * 左下角请求焦点
@@ -53,8 +53,10 @@ public class CustomRelativeLayout extends RelativeLayout {
         views = new ArrayList<>();
         for (int i = 0; i < 15; i++) {
             View view;
-            if (i < 7) {
+            if (i < 7 && i != 1) {
                 view = new RelativeLayoutView(ctx);
+            } else if (i == 1) {
+                view = new CarouselRelativeLayoutView(ctx);
             } else {
                 view = new FocusImageView(ctx);
             }
@@ -120,7 +122,6 @@ public class CustomRelativeLayout extends RelativeLayout {
      * @param position
      */
     private void addFocusView(int position) {
-        Toast.makeText(ctx, "到这儿了", Toast.LENGTH_SHORT).show();
         switch (position) {
             case 0:
                 RelativeLayoutView rlv_0 = (RelativeLayoutView) views.get(0);
@@ -142,7 +143,7 @@ public class CustomRelativeLayout extends RelativeLayout {
                 tv_1.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_1.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
                 tv_1.setTextColor(Color.WHITE);
                 tv_1.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_1.setText("居中显示1");
+//                tv_1.setText("居中显示1");
 //                views.get(1).setImageResource(R.mipmap.ic_launcher);
 
                 break;
