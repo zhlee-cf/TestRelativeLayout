@@ -20,7 +20,7 @@ public class RelativeLayoutView extends RelativeLayout {
     // 默认边框颜色
     private int co = getResources().getColor(R.color.colorPrimaryDark);
     // 默认边框宽度
-    private int borderWidth = DensityUtil.dip2px(getContext(), 5);
+    private int borderWidth = DensityUtil.dip2px(getContext(), 8);
     // 缩小动画
     private AnimatorSet mAnimatorSetZoomIn;
     // 放大动画
@@ -49,18 +49,18 @@ public class RelativeLayoutView extends RelativeLayout {
      * 设置子控件的属性  底部布局会重写
      */
     protected void setProperty() {
-        textView.setBackgroundColor(Color.argb(88, 0, 0, 0));
+        textView.setBackgroundColor(Color.argb(150, 0, 0, 0));
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     void initView() {
         setFocusable(true);
         setFocusableInTouchMode(true);
-        setPadding(5, 5, 5, 5);
+//        setPadding(5, 5, 5, 5);
         textView = new TextView(getContext());
-        textView.setText("测试");
         imageView = new ImageView(getContext());
         imageView.setImageResource(R.mipmap.ic_launcher);
+        textView.setText("开始轮播");
         // 子类可以给里面的控件设置不同 属性
         setProperty();
         addView(imageView);
@@ -135,7 +135,7 @@ public class RelativeLayoutView extends RelativeLayout {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
         if (gainFocus) { // 获得焦点  放大 边框变颜色
             zoomOut();
-            co = getResources().getColor(R.color.colorAccent);
+            co = getResources().getColor(R.color.colorWhite);
             bringToFront();  // 移到前端显示 在线性布局中会有bug，会把该控件放到最后
         } else {
             zoomIn();
