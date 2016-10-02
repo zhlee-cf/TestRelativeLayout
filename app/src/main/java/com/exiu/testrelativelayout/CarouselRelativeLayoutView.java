@@ -6,11 +6,15 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
+/**
+ * 自定义的 子相对布局——顶部轮播图
+ */
 public class CarouselRelativeLayoutView extends RelativeLayoutView {
-
+    // 需要轮播的图片id
     private int[] imageIds = {R.mipmap.a1, R.mipmap.ic_launcher};
+    // 图片对应的标题
     private String[] titles = {"我是第一张图片", "我是第二张图片"};
-
+    // 当前轮播次数
     private int position;
 
     public CarouselRelativeLayoutView(Context context) {
@@ -28,6 +32,9 @@ public class CarouselRelativeLayoutView extends RelativeLayoutView {
         startTask();
     }
 
+    /**
+     * 开启轮播任务  handler延迟消息
+     */
     private void startTask() {
         handler.sendEmptyMessageDelayed(10086, 3000);
     }

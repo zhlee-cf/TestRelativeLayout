@@ -13,18 +13,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
+ * 自定义相对布局，里面自动添加自定义的子相对布局，子相对布局获得焦点变大
  * Created by 振辉 on 2016/10/1.
  */
 public class CustomRelativeLayout extends RelativeLayout {
 
     private Context ctx;
-    private int selfSizeWidth;
-    private int selfSizeHeight;
+    // 添加进来的Views
     private ArrayList<View> views;
+    // 最小控件宽度
     private int singleSizeWidth;
+    // 最小控件高度
     private int singleSizeHeight;
+    // 内边距
     private int padding_10;
-    private int padding_20;
+    // 底部标题
+    private String[] bottomTitles = {"电视台", "电影", "电视剧", "推荐", "少儿", "应用", "观看历史", "搜索"};
+    // 底部图标id
+    private int[] bottomIcons = {R.mipmap.dst, R.mipmap.dy, R.mipmap.dsj, R.mipmap.tj, R.mipmap.se, R.mipmap.yy, R.mipmap.gkls, R.mipmap.ss};
+    // 中间标题
+    private String[] middleTitles = {"我是中间标题1", "我是中间标题2", "我是中间标题3", "我是中间标题4"};
+    // 中间图标id
+    private int[] middleIcons = {R.mipmap.middle_1, R.mipmap.middle_2, R.mipmap.middle_3, R.mipmap.middle_4};
+    // 顶部标题 (轮播图使用自身设置)
+    private String[] topTitles = {"我是顶部标题1", "", "我是顶部标题3"};
+    // 顶部图标 (轮播图使用自身设置)
+    private int[] topIcons = {R.mipmap.top_1, -1, R.mipmap.top_3};
 
     public CustomRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -54,11 +68,14 @@ public class CustomRelativeLayout extends RelativeLayout {
         for (int i = 0; i < 15; i++) {
             View view;
             if (i < 7 && i != 1) {
+                // 普通 上 中 布局
                 view = new RelativeLayoutView(ctx);
             } else if (i == 1) {
+                // 轮播图布局
                 view = new CarouselRelativeLayoutView(ctx);
             } else {
-                view = new FocusImageView(ctx);
+                // 底部布局
+                view = new BottomRelativeLayoutView(ctx);
             }
             // 动态创建的View需要手动设置id，不然没有id，getId的时候返回的都是-1
             // 通过ID判断当点击OK键时，焦点在哪儿
@@ -82,14 +99,13 @@ public class CustomRelativeLayout extends RelativeLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         // 此控件宽高
-        selfSizeWidth = MeasureSpec.getSize(widthMeasureSpec);
-        selfSizeHeight = MeasureSpec.getSize(heightMeasureSpec);
+        int selfSizeWidth = MeasureSpec.getSize(widthMeasureSpec);
+        int selfSizeHeight = MeasureSpec.getSize(heightMeasureSpec);
         // 最小控件宽高
         singleSizeWidth = selfSizeWidth / 8;
         singleSizeHeight = selfSizeHeight / 6;
 
         padding_10 = DensityUtil.dip2px(ctx, 10f);
-        padding_20 = DensityUtil.dip2px(ctx, 20f);
 
         // 测量所有的子view  的大小
         for (int i = 0; i < getChildCount(); i++) {
@@ -122,128 +138,83 @@ public class CustomRelativeLayout extends RelativeLayout {
      * @param position
      */
     private void addFocusView(int position) {
-        switch (position) {
-            case 0:
-                RelativeLayoutView rlv_0 = (RelativeLayoutView) views.get(0);
-                rlv_0.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                ImageView img_0 = rlv_0.getImageView();
-                img_0.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                TextView tv_0 = rlv_0.getTextView();
-                tv_0.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_0.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                tv_0.setTextColor(Color.WHITE);
-                tv_0.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_0.setText("居中显示0");
-                break;
-            case 1:
-                RelativeLayoutView rlv_1 = (RelativeLayoutView) views.get(1);
-                rlv_1.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 2), 0, DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                ImageView img_1 = rlv_1.getImageView();
-                img_1.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                TextView tv_1 = rlv_1.getTextView();
-                tv_1.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_1.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                tv_1.setTextColor(Color.WHITE);
-                tv_1.setPadding(padding_10, padding_10, padding_10, padding_10);
-//                tv_1.setText("居中显示1");
-//                views.get(1).setImageResource(R.mipmap.ic_launcher);
-
-                break;
-            case 2:
-                RelativeLayoutView rlv_2 = (RelativeLayoutView) views.get(2);
-                rlv_2.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 6), 0, DensityUtil.dip2px(ctx, singleSizeWidth * 8), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                ImageView img_2 = rlv_2.getImageView();
-                img_2.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                TextView tv_2 = rlv_2.getTextView();
-                tv_2.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_2.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
-                tv_2.setTextColor(Color.WHITE);
-                tv_2.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_2.setText("居中显示2");
-                break;
-            case 3:
-                RelativeLayoutView rlv_3 = (RelativeLayoutView) views.get(3);
-                rlv_3.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 5));
-                ImageView img_3 = rlv_3.getImageView();
-                img_3.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                TextView tv_3 = rlv_3.getTextView();
-                tv_3.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 2 - tv_3.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                tv_3.setTextColor(Color.WHITE);
-                tv_3.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_3.setText("居中显示3");
-                break;
-            case 4:
-
-                RelativeLayoutView rlv_4 = (RelativeLayoutView) views.get(4);
-                rlv_4.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3), DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 5));
-                ImageView img_4 = rlv_4.getImageView();
-                img_4.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                TextView tv_4 = rlv_4.getTextView();
-                tv_4.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 2 - tv_4.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                tv_4.setTextColor(Color.WHITE);
-                tv_4.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_4.setText("居中显示4");
-                break;
-            case 5:
-                RelativeLayoutView rlv_5 = (RelativeLayoutView) views.get(5);
-                rlv_5.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 3), DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 5));
-                ImageView img_5 = rlv_5.getImageView();
-                img_5.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                TextView tv_5 = rlv_5.getTextView();
-                tv_5.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 2 - tv_5.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                tv_5.setTextColor(Color.WHITE);
-                tv_5.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_5.setText("居中显示5");
-                break;
-            case 6:
-                RelativeLayoutView rlv_6 = (RelativeLayoutView) views.get(6);
-                rlv_6.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 3), DensityUtil.dip2px(ctx, singleSizeWidth * 8), DensityUtil.dip2px(ctx, singleSizeHeight * 5));
-                ImageView img_6 = rlv_6.getImageView();
-                img_6.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                TextView tv_6 = rlv_6.getTextView();
-                tv_6.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 2 - tv_6.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
-                tv_6.setTextColor(Color.WHITE);
-                tv_6.setPadding(padding_10, padding_10, padding_10, padding_10);
-                tv_6.setText("居中显示5");
-                break;
-            case 7:
-                views.get(7).layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_7 = (ImageView) views.get(7);
-                iv_7.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 8:
-                views.get(8).layout(DensityUtil.dip2px(ctx, singleSizeWidth), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_8 = (ImageView) views.get(8);
-                iv_8.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 9:
-                views.get(9).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 3), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_9 = (ImageView) views.get(9);
-                iv_9.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 10:
-                views.get(10).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 3), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_10 = (ImageView) views.get(10);
-                iv_10.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 11:
-                views.get(11).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 5), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_11 = (ImageView) views.get(11);
-                iv_11.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 12:
-                views.get(12).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 5), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_12 = (ImageView) views.get(12);
-                iv_12.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 13:
-                views.get(13).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 7), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_13 = (ImageView) views.get(13);
-                iv_13.setImageResource(R.mipmap.ic_launcher);
-                break;
-            case 14:
-                views.get(14).layout(DensityUtil.dip2px(ctx, singleSizeWidth * 7), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * 8), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
-                ImageView iv_14 = (ImageView) views.get(14);
-                iv_14.setImageResource(R.mipmap.ic_launcher);
-                break;
-
+        if (position < 3) {  // 上
+            setTopLayout(position);
+        } else if (position > 6) {  // 下
+            setBottomLayout(position);
+        } else {    // 中
+            setMiddleLayout(position);
         }
     }
+
+    /**
+     * 设置顶部布局
+     *
+     * @param position
+     */
+    private void setTopLayout(int position) {
+        RelativeLayoutView relativeLayoutView = (RelativeLayoutView) views.get(position);
+        ImageView iv_top = relativeLayoutView.getImageView();
+        TextView tv_top = relativeLayoutView.getTextView();
+        switch (position) {
+            case 0:
+                relativeLayoutView.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                iv_top.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                tv_top.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_top.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                tv_top.setText(topTitles[position]);
+                iv_top.setImageResource(topIcons[position]);
+                break;
+            case 1:
+                relativeLayoutView.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 2), 0, DensityUtil.dip2px(ctx, singleSizeWidth * 6), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                iv_top.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                tv_top.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_top.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 4), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                break;
+            case 2:
+                relativeLayoutView.layout(DensityUtil.dip2px(ctx, singleSizeWidth * 6), 0, DensityUtil.dip2px(ctx, singleSizeWidth * 8), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                iv_top.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                tv_top.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 3 - tv_top.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3));
+                tv_top.setText(topTitles[position]);
+                iv_top.setImageResource(topIcons[position]);
+                break;
+        }
+        tv_top.setTextColor(Color.WHITE);
+        tv_top.setPadding(padding_10, padding_10, padding_10, padding_10);
+    }
+
+    /**
+     * 设置中间布局
+     *
+     * @param position
+     */
+    private void setMiddleLayout(int position) {
+        RelativeLayoutView relativeLayoutView = (RelativeLayoutView) views.get(position);
+        relativeLayoutView.layout(DensityUtil.dip2px(ctx, singleSizeWidth * (position - 3) * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 3), DensityUtil.dip2px(ctx, singleSizeWidth * ((position - 3) * 2 + 2)), DensityUtil.dip2px(ctx, singleSizeHeight * 5));
+        ImageView iv_middle = relativeLayoutView.getImageView();
+        TextView tv_middle = relativeLayoutView.getTextView();
+        iv_middle.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
+        tv_middle.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight * 2 - tv_middle.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth * 2), DensityUtil.dip2px(ctx, singleSizeHeight * 2));
+        tv_middle.setTextColor(Color.WHITE);
+        tv_middle.setPadding(padding_10, padding_10, padding_10, padding_10);
+        tv_middle.setText(middleTitles[position - 3]);
+        iv_middle.setImageResource(middleIcons[position - 3]);
+    }
+
+    /**
+     * 设置底部布局
+     *
+     * @param position
+     */
+    private void setBottomLayout(int position) {
+        BottomRelativeLayoutView bottomRelativeLayoutView = (BottomRelativeLayoutView) views.get(position);
+        bottomRelativeLayoutView.layout(DensityUtil.dip2px(ctx, singleSizeWidth * (position - 7)), DensityUtil.dip2px(ctx, singleSizeHeight * 5), DensityUtil.dip2px(ctx, singleSizeWidth * (position - 7 + 1)), DensityUtil.dip2px(ctx, singleSizeHeight * 6));
+        ImageView iv_icon = bottomRelativeLayoutView.getImageView();
+        TextView tv_title = bottomRelativeLayoutView.getTextView();
+        iv_icon.layout(0, 0, DensityUtil.dip2px(ctx, singleSizeWidth), DensityUtil.dip2px(ctx, singleSizeHeight - tv_title.getHeight()));
+        tv_title.layout(0, DensityUtil.dip2px(ctx, singleSizeHeight - tv_title.getHeight()), DensityUtil.dip2px(ctx, singleSizeWidth), DensityUtil.dip2px(ctx, singleSizeHeight));
+        tv_title.setTextColor(Color.WHITE);
+        tv_title.setPadding(padding_10, padding_10, padding_10, padding_10);
+        tv_title.setText(bottomTitles[position - 7]);
+        iv_icon.setImageResource(bottomIcons[position - 7]);
+    }
+
 }

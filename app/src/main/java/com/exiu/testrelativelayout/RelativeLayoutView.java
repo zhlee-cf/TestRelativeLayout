@@ -13,16 +13,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+/**
+ * 自定义的  子相对布局——普通顶部和中部
+ */
 public class RelativeLayoutView extends RelativeLayout {
-
-    private int co = Color.TRANSPARENT;
-    private int borderwidth = DensityUtil.dip2px(getContext(), 5);
+    // 默认边框颜色
+    private int co = getResources().getColor(R.color.colorPrimaryDark);
+    // 默认边框宽度
+    private int borderWidth = DensityUtil.dip2px(getContext(), 5);
+    // 缩小动画
     private AnimatorSet mAnimatorSetZoomIn;
+    // 放大动画
     private AnimatorSet mAnimatorSetZoomOut;
-    private int selfSizeWidth;
-    private int selfSizeHeight;
-    private ImageView imageView;
-    private TextView textView;
+    // 此相对布局里面的两个子控件
+    protected ImageView imageView;
+    protected TextView textView;
 
     public RelativeLayoutView(Context context) {
         super(context);
@@ -40,18 +45,24 @@ public class RelativeLayoutView extends RelativeLayout {
         initView();
     }
 
+    /**
+     * 设置子控件的属性  底部布局会重写
+     */
+    protected void setProperty() {
+        textView.setBackgroundColor(Color.argb(88, 0, 0, 0));
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+    }
+
     void initView() {
         setFocusable(true);
         setFocusableInTouchMode(true);
         setPadding(5, 5, 5, 5);
         textView = new TextView(getContext());
         textView.setText("测试");
-        textView.setBackgroundColor(Color.argb(88, 0, 0, 0));
-//        textView.setGravity(Gravity.CENTER_HORIZONTAL);
         imageView = new ImageView(getContext());
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-
         imageView.setImageResource(R.mipmap.ic_launcher);
+        // 子类可以给里面的控件设置不同 属性
+        setProperty();
         addView(imageView);
         addView(textView);
     }
@@ -63,26 +74,13 @@ public class RelativeLayoutView extends RelativeLayout {
 
     //设置边框宽度  
     public void setBorderWidth(int width) {
-        borderwidth = width;
+        borderWidth = width;
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        // 画边框
-        Rect rec = canvas.getClipBounds();
-        rec.bottom--;
-        rec.right--;
-        Paint paint = new Paint();
-        //设置边框颜色
-        paint.setColor(co);
-        paint.setStyle(Paint.Style.STROKE);
-        //设置边框宽度
-        paint.setStrokeWidth(borderwidth);
-        canvas.drawRect(rec, paint);
-    }
-
-    @Override
+    /**
+     * 画边框 不知道为嘛 在onDraw方法里无效，ImageView画边框是在onDraw方法里写的
+     */
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         // 画边框
@@ -94,14 +92,24 @@ public class RelativeLayoutView extends RelativeLayout {
         paint.setColor(co);
         paint.setStyle(Paint.Style.STROKE);
         //设置边框宽度
-        paint.setStrokeWidth(borderwidth);
+        paint.setStrokeWidth(borderWidth);
         canvas.drawRect(rec, paint);
     }
 
+    /**
+     * 获得当前控件的子控件 ImageView 供外部使用
+     *
+     * @return
+     */
     public ImageView getImageView() {
         return this.imageView;
     }
 
+    /**
+     * 获得当前控件的子控件 TextView 供外部使用
+     *
+     * @return
+     */
     public TextView getTextView() {
         return this.textView;
     }
@@ -109,9 +117,9 @@ public class RelativeLayoutView extends RelativeLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        // 此控件宽高
-        selfSizeWidth = MeasureSpec.getSize(widthMeasureSpec);
-        selfSizeHeight = MeasureSpec.getSize(heightMeasureSpec);
+//        // 此控件宽高
+//        int selfSizeWidth = MeasureSpec.getSize(widthMeasureSpec);
+//        int selfSizeHeight = MeasureSpec.getSize(heightMeasureSpec);
         // 测量所有的子view  的大小
         for (int i = 0; i < getChildCount(); i++) {
             View view = getChildAt(i);
@@ -120,26 +128,24 @@ public class RelativeLayoutView extends RelativeLayout {
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-//        imageView.layout(0, 0, DensityUtil.dip2px(getContext(), selfSizeWidth), DensityUtil.dip2px(getContext(), selfSizeHeight));
-//        ToastUtil.showTextToast(getContext(), "宽::" + selfSizeWidth + "高::" + selfSizeHeight);
-    }
-
-    @Override
+    /**
+     * 焦点变化时，会调用此方法
+     */
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        if (gainFocus) {
+        if (gainFocus) { // 获得焦点  放大 边框变颜色
             zoomOut();
-            co = Color.BLUE;
-            bringToFront();
+            co = getResources().getColor(R.color.colorAccent);
+            bringToFront();  // 移到前端显示 在线性布局中会有bug，会把该控件放到最后
         } else {
             zoomIn();
-            co = Color.TRANSPARENT;
+            co = getResources().getColor(R.color.colorPrimaryDark);
         }
     }
 
-
+    /**
+     * 方法  缩小动画 属性动画
+     */
     private void zoomIn() {
         //缩小动画
         if (mAnimatorSetZoomIn == null) {
@@ -153,6 +159,9 @@ public class RelativeLayoutView extends RelativeLayout {
         mAnimatorSetZoomIn.start();
     }
 
+    /**
+     * 方法 放大动画 属性动画
+     */
     private void zoomOut() {
         //放大动画
         if (mAnimatorSetZoomOut == null) {
